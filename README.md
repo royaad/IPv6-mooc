@@ -153,11 +153,7 @@ curl [fd75:e4d9:cb77:3::c3]
 
 by enclosing the IP address in between brackets, `curl` knows that it is dealing with an IPv6 address.
 
-## References
-
-- [nc Command (Netcat) with Examples](https://phoenixnap.com/kb/nc-command)
-- [curl Command in Linux with Examples](https://www.geeksforgeeks.org/curl-command-in-linux-with-examples/)
-- [Difference Between ifconfig and ipconfig](https://www.baeldung.com/linux/ifconfig-vs-ipconfig)
+### For later
 
 ```sh
 sh interfaces detail #Router
@@ -179,3 +175,34 @@ ping6 -c 2 ff02::1%eth0 #PC only router multicast
 cat /etc/resolv.conf #dns ??
 
 ```
+
+## Tutorial 2
+
+In this tutorial, we still have the same network topology as tutorial 1. We will be further exploring packets on the IPv6 network using WireShark.
+
+Once the network is launched, we access the PC-1 terminal and type the following commands:
+
+```sh
+# access the vyos router @ ip fd75:e4d9:cb77:1::1 via ssh, which requires the vyos password
+ssh vyos@fd75:e4d9:cb77:1::1
+# display info about vyos
+sh version
+# stop the ssh session
+exit
+```
+
+On WireShark, we can notice various interesting packets.
+
+We first notice 3 TCP handshake packets:
+
+| Number | Time     | Source               | Destination          | Protocol | Length | Info                                                                                                         |
+| :----- | :------- | :------------------- | :------------------- | :------- | :----- | :----------------------------------------------------------------------------------------------------------- |
+| 1      | 0.000000 | fd75:e4d9:cb77:1::c1 | fd75:e4d9:cb77:1::1  | TCP      | 94     | 54612 → 22 [SYN] Seq=0 Win=64800 Len=0 MSS=1440 SACK_PERM=1 TSval=3744148240 TSecr=0 WS=128                  |
+| 2      | 0.001254 | fd75:e4d9:cb77:1::1  | fd75:e4d9:cb77:1::c1 | TCP      | 94     | 22 → 54612 [SYN, ACK] Seq=0 Ack=1 Win=28560 Len=0 MSS=1440 SACK_PERM=1 TSval=53160525 TSecr=3744148240 WS=64 |
+| 3      | 0.001405 | fd75:e4d9:cb77:1::c1 | fd75:e4d9:cb77:1::1  | TCP      | 86     | 54612 → 22 [ACK] Seq=1 Ack=1 Win=64896 Len=0 TSval=3744148242 TSecr=53160525                                 |
+
+## References
+
+- [nc Command (Netcat) with Examples](https://phoenixnap.com/kb/nc-command)
+- [curl Command in Linux with Examples](https://www.geeksforgeeks.org/curl-command-in-linux-with-examples/)
+- [Difference Between ifconfig and ipconfig](https://www.baeldung.com/linux/ifconfig-vs-ipconfig)
